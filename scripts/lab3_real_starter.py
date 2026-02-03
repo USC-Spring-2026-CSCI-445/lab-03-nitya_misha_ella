@@ -29,9 +29,9 @@ class OdometryPublisher:
 
         ######### Your code starts here #########
         # TurtleBot3 Burger parameters from manual (https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/)
-        self.TICK_TO_RAD =
-        self.wheel_radius =
-        self.wheel_separation =
+        self.TICK_TO_RAD = 2.0*math.pi/4096
+        self.wheel_radius = 0.033
+        self.wheel_separation = 0.160
         ######### Your code ends here #########
 
         self.current_time = rospy.Time.now()
@@ -56,7 +56,26 @@ class OdometryPublisher:
 
         ######### Your code starts here #########
         # add odometry equations to calculate robot's self.x, self.y, self.theta given encoder values
+        
+        #encoder diff
+        left_change = self.left_encoder - self.last_left_encoder
+        right_change = self.right_encoder - self.last_right_encoder
+        #update
+        self.last_left_encoder = self.left_encoder
+        self.last_right_encoder = self.right_encoder
 
+        #turn num ticks to distance; first turn it into radians then multiply by wheel radius to get distance
+        left_dist = left_change * self.TICK_TO_RAD * self.wheel_radius
+        right_dist = right_change * self.TICK_TO_RAD * self.wheel_radius
+
+        #again use formula to calculate how much robot moved forward and turned
+        forward_dist = (left_dist+right_dist)/2
+        turned = (right_dist-left_dist)/self.wheel_separation
+
+        # update position
+        self.x = self.x+forward_dist*math.cos(self.theta+ (turned/2.0))
+        self.y = self.y+forward_dist* math.sin(self.theta +(turned/2.0))
+        self.theta = self.theta + turned
         ######### Your code ends here #########
 
         odom_quat = tf.transformations.quaternion_from_euler(0, 0, self.theta)
