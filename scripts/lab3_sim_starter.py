@@ -42,7 +42,7 @@ class OdometryPublisher:
         ######### Your code starts here #########
         # add odometry equations to calculate robot's self.x, self.y, self.theta given encoder values
         if dt == 0:
-        return
+            return
 
         # calculating change based on time
         delta_x = self.vx * math.cos(self.theta) * dt
