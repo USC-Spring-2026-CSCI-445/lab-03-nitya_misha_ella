@@ -53,8 +53,6 @@ class OdometryPublisher:
         self.y += delta_y
         self.theta += delta_th
     
-        self.last_time = self.current_time
-
         ######### Your code ends here #########
         
         odom_quat = tf.transformations.quaternion_from_euler(0, 0, self.theta)
