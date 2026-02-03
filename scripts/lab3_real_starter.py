@@ -69,13 +69,13 @@ class OdometryPublisher:
         right_dist = right_change * self.TICK_TO_RAD * self.wheel_radius
 
         #again use formula to calculate how much robot moved forward and turned
-        forward_dist = (left_dist+right_dist)/2
-        turned = (right_dist-left_dist)/self.wheel_separation
+        delta_s = (left_dist+right_dist)/2
+        delta_theta = (right_dist-left_dist)/self.wheel_separation
 
         # update position
-        self.x = self.x+forward_dist*math.cos(self.theta+ (turned/2.0))
-        self.y = self.y+forward_dist* math.sin(self.theta +(turned/2.0))
-        self.theta = self.theta + turned
+        self.x = self.x+delta_s*math.cos(self.theta+ (delta_theta/2.0))
+        self.y = self.y+delta_s* math.sin(self.theta +(delta_theta/2.0))
+        self.theta = self.theta + delta_theta
         ######### Your code ends here #########
 
         odom_quat = tf.transformations.quaternion_from_euler(0, 0, self.theta)
